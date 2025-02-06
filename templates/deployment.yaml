@@ -14,6 +14,17 @@ spec:
       labels:
         app: sre-app
     spec:
+      initContainers:
+        - name: wait-for-migration
+          image: bitnami/kubectl:latest
+          command: 
+            - "/bin/sh"
+            - "-c"
+            - |
+              until kubectl get job sre-app-migrate -n {{ .Release.Namespace }} -o jsonpath="{.status.succeeded}" | grep -q 1; do 
+                echo "waiting for migration"; 
+                sleep 3; 
+              done
       containers:
         - name: sre-app
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
