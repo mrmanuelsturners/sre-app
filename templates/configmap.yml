@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sre-app-config
+data:
+  DATABASE_URL: "{{ .Values.env.DATABASE_URL }}"
+  PHX_HOST: "{{ .Values.env.PHX_HOST }}"
+  SECRET_KEY_BASE: "{{ .Values.env.SECRET_KEY_BASE }}"
+  POOL_SIZE: "{{ .Values.env.POOL_SIZE }}"
+  PORT: "{{ .Values.env.PORT }}"

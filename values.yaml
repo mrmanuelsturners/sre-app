@@ -1,0 +1,31 @@
+image:
+  repository: ghcr.io/stordco/sre-technical-challenge
+  tag: latest
+  pullPolicy: "IfNotPresent"
+
+env:
+  DATABASE_URL: postgresql://postgres:password@sre-db-postgresql/sre-technical-challenge
+  PHX_HOST: localhost
+  SECRET_KEY_BASE: GWks+00R99rp4iCigXEDAP7WRQXFiTImOP0vIUmFyaNj1DGDXsMvEfSXtb7ITMKC
+  POOL_SIZE: "10"
+  PORT: "4000"
+
+service:
+  type: ClusterIP
+  port: 80
+
+resources: {}
+
+livenessProbe:
+  httpGet:
+    path: /_health
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /_health
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sre-app
+  labels:
+    app: sre-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sre-app
+  template:
+    metadata:
+      labels:
+        app: sre-app
+    spec:
+      containers:
+        - name: sre-app
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
+          env:
+            - name: DATABASE_URL
+              value: "{{ .Values.env.DATABASE_URL }}"
+            - name: PHX_HOST
+              value: "{{ .Values.env.PHX_HOST }}"
+            - name: SECRET_KEY_BASE
+              value: "{{ .Values.env.SECRET_KEY_BASE }}"
+            - name: POOL_SIZE
+              value: "{{ .Values.env.POOL_SIZE }}"
+            - name: PORT
+              value: "{{ .Values.env.PORT }}"
+          ports:
+            - name: http
+              containerPort: 4000
+          livenessProbe:
+            {{- if .Values.livenessProbe }}
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+            {{- end }}
+          readinessProbe:
+            {{- if .Values.readinessProbe }}
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+            {{- end }}
