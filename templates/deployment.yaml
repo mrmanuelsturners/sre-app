@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sre-app
+  name: {{ include "sre-app.fullname" . }}
   labels:
-    app: sre-app
+    app: {{ include "sre-app.fullname" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sre-app
+      app: {{ include "sre-app.fullname" . }}
   template:
     metadata:
       labels:
-        app: sre-app
+        app: {{ include "sre-app.fullname" . }}
     spec:
       initContainers:
         - name: wait-for-migration
@@ -21,17 +21,19 @@ spec:
             - "/bin/sh"
             - "-c"
             - |
-              until kubectl get job sre-app-migrate -n {{ .Release.Namespace }} -o jsonpath="{.status.succeeded}" | grep -q 1; do 
+              until kubectl get job {{ include "sre-app.fullname" . }}-migrate -n {{ .Release.Namespace }} -o jsonpath="{.status.succeeded}" | grep -q 1; do 
                 echo "waiting for migration"; 
                 sleep 3; 
               done
       containers:
-        - name: sre-app
+        - name: {{ include "sre-app.fullname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
           envFrom:
             - configMapRef:
-                name: sre-app-config
+                name: {{ include "sre-app.fullname" . }}-config
+            - secretRef:
+                name: {{ include "sre-app.fullname" . }}-secrets
           ports:
             - name: http
               containerPort: 4000

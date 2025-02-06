@@ -6,9 +6,12 @@ image:
 env:
   DATABASE_URL: postgresql://postgres:password@sre-db-postgresql/sre-technical-challenge
   PHX_HOST: localhost
-  SECRET_KEY_BASE: GWks+00R99rp4iCigXEDAP7WRQXFiTImOP0vIUmFyaNj1DGDXsMvEfSXtb7ITMKC
   POOL_SIZE: "10"
   PORT: "4000"
+
+secrets:
+   SECRET_KEY_BASE: GWks+00R99rp4iCigXEDAP7WRQXFiTImOP0vIUmFyaNj1DGDXsMvEfSXtb7ITMKC
+  
 
 service:
   type: ClusterIP
