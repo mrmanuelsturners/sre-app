@@ -29,17 +29,9 @@ spec:
         - name: sre-app
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
-          env:
-            - name: DATABASE_URL
-              value: "{{ .Values.env.DATABASE_URL }}"
-            - name: PHX_HOST
-              value: "{{ .Values.env.PHX_HOST }}"
-            - name: SECRET_KEY_BASE
-              value: "{{ .Values.env.SECRET_KEY_BASE }}"
-            - name: POOL_SIZE
-              value: "{{ .Values.env.POOL_SIZE }}"
-            - name: PORT
-              value: "{{ .Values.env.PORT }}"
+          envFrom:
+            - configMapRef:
+                name: sre-app-config
           ports:
             - name: http
               containerPort: 4000
